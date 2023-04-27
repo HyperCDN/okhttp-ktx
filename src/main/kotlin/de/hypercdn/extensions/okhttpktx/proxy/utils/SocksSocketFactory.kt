@@ -1,6 +1,6 @@
-package de.hypercdn.extensions.okhttpktx.proxy
+package de.hypercdn.extensions.okhttpktx.proxy.utils
 
-import de.hypercdn.extensions.okhttpktx.client.extended
+import de.hypercdn.extensions.okhttpktx.proxy.extended
 import sockslib.client.Socks5
 import sockslib.client.SocksSocket
 import java.net.InetAddress

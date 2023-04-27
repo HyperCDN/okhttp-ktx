@@ -1,5 +1,7 @@
 package de.hypercdn.extensions.okhttpktx.proxy
 
+import de.hypercdn.extensions.okhttpktx.proxy.utils.HttpProxyAuthenticator
+import de.hypercdn.extensions.okhttpktx.proxy.utils.SocksSocketFactory
 import okhttp3.OkHttpClient
 import java.net.Proxy
 

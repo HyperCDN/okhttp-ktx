@@ -1,4 +1,4 @@
-package de.hypercdn.extensions.okhttpktx.client
+package de.hypercdn.extensions.okhttpktx.proxy
 
 import sockslib.common.Credentials
 import java.net.Proxy

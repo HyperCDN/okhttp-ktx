@@ -1,9 +1,10 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.20"
+    `maven-publish`
 }
 
 group = "de.hypercdn.extensions"
-version = "1.0-SNAPSHOT"
+version = project.findProperty("revision") ?: "UNKNOWN"
 
 repositories {
     mavenCentral()
@@ -24,4 +25,26 @@ tasks.test {
 
 kotlin {
     jvmToolchain(11)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("github") {
+            group = project.group.toString()
+            artifactId  = project.name.toString()
+            version = project.version.toString()
+
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/HyperCDN/okhttp-ktx")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
