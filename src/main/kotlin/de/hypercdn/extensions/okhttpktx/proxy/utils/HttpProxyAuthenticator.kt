@@ -4,7 +4,7 @@ import de.hypercdn.extensions.okhttpktx.proxy.extended
 import okhttp3.*
 import java.net.Proxy
 
-class HttpProxyAuthenticator (
+open class HttpProxyAuthenticator (
     private val proxy: Proxy
 ) : Authenticator {
 

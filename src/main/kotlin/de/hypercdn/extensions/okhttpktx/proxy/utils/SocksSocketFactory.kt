@@ -8,7 +8,7 @@ import java.net.Proxy
 import java.net.Socket
 import javax.net.SocketFactory
 
-class SocksSocketFactory(
+open class SocksSocketFactory(
     proxy: Proxy,
     private val ignoreLocalRebindBindAttempts: Boolean = false
 ) : SocketFactory() {

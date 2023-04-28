@@ -7,7 +7,7 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class FeedbackAwareCallManager(
+open class FeedbackAwareCallManager(
     val okHttpClient: OkHttpClient,
     val feedbackAwareProxyProvider: FeedbackAwareProxyProvider
 ) : ProxyCallManager {

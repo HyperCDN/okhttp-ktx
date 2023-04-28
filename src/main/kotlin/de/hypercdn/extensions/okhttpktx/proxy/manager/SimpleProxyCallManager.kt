@@ -6,7 +6,7 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class SimpleProxyCallManager(
+open class SimpleProxyCallManager(
     val okHttpClient: OkHttpClient,
     val proxyProvider: ProxyProvider
 ) : ProxyCallManager {

@@ -5,7 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.net.Proxy
 
-class FeedbackAwareProxyInterceptor (
+open class FeedbackAwareProxyInterceptor (
     val feedbackAwareProxyProvider: FeedbackAwareProxyProvider,
     val usedProxy: Proxy,
 ): Interceptor {

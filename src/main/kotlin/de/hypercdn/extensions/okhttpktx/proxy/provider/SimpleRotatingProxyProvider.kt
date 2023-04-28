@@ -3,7 +3,7 @@ package de.hypercdn.extensions.okhttpktx.proxy.provider
 import de.hypercdn.extensions.okhttpktx.proxy.utils.LoopIterator
 import java.net.Proxy
 
-class SimpleRotatingProxyProvider(val proxies: List<Proxy>): ProxyProvider {
+open class SimpleRotatingProxyProvider(val proxies: List<Proxy>): ProxyProvider {
 
     val iterator = LoopIterator(proxies)
 

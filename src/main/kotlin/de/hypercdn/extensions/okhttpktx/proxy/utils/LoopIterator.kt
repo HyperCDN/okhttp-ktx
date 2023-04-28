@@ -1,6 +1,6 @@
 package de.hypercdn.extensions.okhttpktx.proxy.utils
 
-class LoopIterator<T>(val items: List<T>): Iterator<T> {
+open class LoopIterator<T>(val items: List<T>): Iterator<T> {
     override fun hasNext(): Boolean {
         return items.isNotEmpty()
     }

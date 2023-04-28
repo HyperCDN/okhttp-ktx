@@ -5,7 +5,7 @@ import java.lang.ref.WeakReference
 import java.net.Proxy
 import java.net.SocketAddress
 
-class ExtendedProxy: Proxy {
+open class ExtendedProxy: Proxy {
 
     val ref: WeakReference<Proxy>?
     val credentials: Credentials?
