@@ -7,9 +7,9 @@ import java.net.Proxy
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
-open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStrategies: HashMap<DisableStrategy, EnableStrategy>): FeedbackAwareProxyProvider {
+open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStrategies: HashMap<DisableStrategy, () -> EnableStrategy>): FeedbackAwareProxyProvider {
 
-    val strategies = HashMap<DisableStrategy, EnableStrategy>(handlingStrategies)
+    val strategies = HashMap<DisableStrategy, () -> EnableStrategy>(handlingStrategies)
     val enabled = ConcurrentLinkedQueue(proxies)
     val disabled = ConcurrentHashMap<Proxy, EnableStrategy>()
 
@@ -18,7 +18,7 @@ open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStra
         if (disabled.contains(proxy) || proxy == null) return
         strategies.entries.find { it.key(response, throwable) }?.let {
             enabled.remove(proxy)
-            disabled.put(proxy, it.value)
+            disabled.put(proxy, it.value())
             return
         }
         return
