@@ -2,6 +2,8 @@ package de.hypercdn.extensions.okhttpktx.proxy.utils
 
 import de.hypercdn.extensions.okhttpktx.proxy.extended
 import okhttp3.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.Proxy
 
 open class HttpProxyAuthenticator (
@@ -13,6 +15,8 @@ open class HttpProxyAuthenticator (
             throw IllegalStateException("Not a http proxy")
     }
 
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
+
     override fun authenticate(route: Route?, response: Response): Request? {
         val extended = proxy.extended()
         if (extended.credentials == null)
@@ -22,6 +26,7 @@ open class HttpProxyAuthenticator (
             && (response.challenges().any{ it.scheme.equals("OkHttp-Preemptive", ignoreCase = true) })
             || response.request.header("Proxy-Authorization") == null)
         {
+            log.debug("Injecting credentials for proxy {}", proxy)
             return response.request.newBuilder()
                 .header("Proxy-Authorization", credentials)
                 .build()

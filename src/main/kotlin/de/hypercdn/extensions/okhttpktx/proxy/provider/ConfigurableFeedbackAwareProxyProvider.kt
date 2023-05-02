@@ -2,16 +2,23 @@ package de.hypercdn.extensions.okhttpktx.proxy.provider
 
 import de.hypercdn.extensions.okhttpktx.proxy.utils.DisableStrategy
 import de.hypercdn.extensions.okhttpktx.proxy.utils.EnableStrategy
+import de.hypercdn.extensions.okhttpktx.proxy.utils.Selector
 import okhttp3.Response
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.Proxy
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 
-open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStrategies: HashMap<DisableStrategy, () -> EnableStrategy>): FeedbackAwareProxyProvider {
+open class ConfigurableFeedbackAwareProxyProvider(
+    proxies: MutableCollection<Proxy>,
+    private val selector: Selector,
+    private val strategies: HashMap<DisableStrategy, () -> EnableStrategy>
+) : FeedbackAwareProxyProvider {
 
-    val strategies = HashMap<DisableStrategy, () -> EnableStrategy>(handlingStrategies)
-    val enabled = ConcurrentLinkedQueue(proxies)
-    val disabled = ConcurrentHashMap<Proxy, EnableStrategy>()
+    private val enabled = proxies
+    private val disabled = ConcurrentHashMap<Proxy, EnableStrategy>()
+
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Synchronized
     private fun tryDisable(proxy: Proxy?, response: Response?, throwable: Throwable?) {
@@ -19,6 +26,7 @@ open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStra
         strategies.entries.find { it.key(response, throwable) }?.let {
             enabled.remove(proxy)
             disabled.put(proxy, it.value())
+            log.debug("Disabled proxy {}", proxy)
             return
         }
         return
@@ -28,10 +36,12 @@ open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStra
     private fun tryEnableAll() {
         if (disabled.isEmpty()) return
         val reEnable = disabled.entries.filter { it.value() }.map { it.key }
+        if (reEnable.isEmpty()) return
         reEnable.forEach {
             disabled.remove(it)
         }
         enabled.addAll(reEnable)
+        log.debug("Enabled proxies {}", reEnable)
     }
 
     override fun handleFailure(proxy: Proxy?, throwable: Throwable?) {
@@ -45,10 +55,16 @@ open class FeedbackAwareRotatingProxyProvider(proxies: List<Proxy>, handlingStra
     @Synchronized
     override fun next(): Proxy {
         tryEnableAll()
-        val proxy = enabled.poll()
-            ?: throw IllegalStateException("No proxy available. ${disabled.size} proxies currently disabled.")
-        enabled.add(proxy)
+        val proxy = selector(enabled)
         tryDisable(proxy, null, null)
         return proxy
+    }
+
+    @Synchronized
+    override fun all(): List<Proxy> {
+        return ArrayList<Proxy>().apply {
+            addAll(enabled)
+            addAll(disabled.keys)
+        }.toList()
     }
 }

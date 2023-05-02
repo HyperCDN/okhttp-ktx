@@ -5,5 +5,6 @@ import java.net.Proxy
 interface ProxyProvider {
 
     fun next(): Proxy
+    fun all(): List<Proxy>
 
 }
