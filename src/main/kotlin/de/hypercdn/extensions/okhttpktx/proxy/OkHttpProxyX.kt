@@ -2,12 +2,14 @@ package de.hypercdn.extensions.okhttpktx.proxy
 
 import de.hypercdn.extensions.okhttpktx.proxy.utils.HttpProxyAuthenticator
 import de.hypercdn.extensions.okhttpktx.proxy.utils.SocksSocketFactory
+import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import java.net.Proxy
 
 var PROXY_BUILDER_DEFAULT = fun(base: OkHttpClient.Builder?): OkHttpClient.Builder {
     return (base ?: OkHttpClient.Builder())
         .retryOnConnectionFailure(false)
+        .connectionPool(ConnectionPool())
 }
 
 fun OkHttpClient.newProxy(proxy: Proxy?, allowDefaultFallback: Boolean = true): OkHttpClient {
