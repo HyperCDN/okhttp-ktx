@@ -1,7 +1,7 @@
 package de.hypercdn.extensions.okhttpktx.proxy.manager
 
-import de.hypercdn.extensions.okhttpktx.proxy.newProxy
 import de.hypercdn.extensions.okhttpktx.proxy.provider.ProxyProvider
+import de.hypercdn.extensions.okhttpktx.proxy.withProxy
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,7 +19,7 @@ open class SimpleProxyCallManager(
         val proxy = proxyProvider.next()
         log.debug("New call using proxy {}", proxy)
         return okHttpClient
-            .newProxy(proxy)
+            .withProxy(proxy)
             .newCall(request)
     }
 

@@ -11,7 +11,7 @@
 Okhttp client using a socks proxy with credentials
 ```kotlin
 val withCredentials = socksProxy.extended(UsernamePasswordCredentials(username, password))
-val proxiedOkhttpClient = okhttpClient.newProxy(withCredentials)
+val proxiedOkhttpClient = okhttpClient.withProxy(withCredentials)
 ```
 Proxy provider and call manager
 ```kotlin
