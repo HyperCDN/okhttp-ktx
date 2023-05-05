@@ -17,6 +17,7 @@ open class ConfigurableFeedbackAwareProxyProvider(
 
     private val enabled = proxies
     private val disabled = ConcurrentHashMap<Proxy, EnableStrategy>()
+    private val supplyInfo = ConcurrentHashMap<Proxy, Long>()
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -56,6 +57,7 @@ open class ConfigurableFeedbackAwareProxyProvider(
     override fun next(): Proxy {
         tryEnableAll()
         val proxy = selector(enabled)
+        supplyInfo.computeIfPresent(proxy) { _, v -> v + 1 }
         tryDisable(proxy, null, null)
         return proxy
     }
@@ -66,5 +68,13 @@ open class ConfigurableFeedbackAwareProxyProvider(
             addAll(enabled)
             addAll(disabled.keys)
         }.toList()
+    }
+
+    fun ratio(): Pair<Int, Int> {
+        return enabled.size to disabled.size
+    }
+
+    fun supplyInfo(): Map<Proxy, Long> {
+        return supplyInfo.toMap()
     }
 }
